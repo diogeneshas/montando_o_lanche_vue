@@ -181,10 +181,31 @@
               <div class="row mt-2">
                 <div class="col d-flex justify-content-between">
                   <button class="btn btn-warning" @click="etapa -= 1">Voltar para o lanche</button>
-                  <button class="btn btn-success">Confirmar</button>
+                  <button class="btn btn-success" @click="confirmarPedido()">Confirmar</button>
                 </div>
               </div>
             </div>
+
+            <div class="col-md-6" v-if="etapa == 3">
+              <div class="row mt-2">
+                <div class="col">
+                  <div class="card">
+                    <div class="card-header">Pedido Confirmado</div>
+                    <div class="card-body">
+                      <p>Agora e so aguardar 10 minutos!</p>
+                      <p>Vamos chamar vc em breve</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col d-flex justify-content-between">
+                  <button class="btn btn-primary" @click="etapa = 1">Repetir Pedido</button>
+                  <button class="btn btn-success" @click="novoPedido()">Novo Pedido</button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
     </div>
@@ -200,6 +221,7 @@
               etapa: 1,
               inputNome: '',
               inputEndereco: '',
+              novoPedidoAssincrono: null
             },
             computed: {
               pao() {
@@ -255,6 +277,30 @@
                    this.etapa = 2
                 } else {
                   alert('Voce precisa selecionar um pao e um hamburguer')
+                }
+              },
+              confirmarPedido() {
+                if(this.inputNome && this.inputEndereco) {
+                  this.etapa = 3
+                  this.novoPedidoAssincrono = setTimeout(() => this.novoPedido(), 7000)
+                } else {
+                  alert('voce precisa informar um nome e endereco')
+                }
+              },
+              novoPedido() {
+                this.inputTipoPao = ''
+                this.inputSaladas = []
+                this.inputMolhos = []
+                this.inputHamburguer = ''
+                this.etapa = 1
+                this.inputNome = ''
+                this.inputEndereco = ''
+              }
+            },
+            watch: {
+              etapa(novoValor) {
+                if(novoValor == 1) {
+                  clearTimeout(this.novoPedidoAssincrono)
                 }
               }
             }
